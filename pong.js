@@ -1,7 +1,7 @@
 var animate = window.requestAnimationFrame ||
-  window.webkitRequestAnimationFrame ||
-  window.mozRequestAnimationFrame ||
-  function(callback) { window.setTimeout(callback, 1000/60) };
+window.webkitRequestAnimationFrame ||
+window.mozRequestAnimationFrame ||
+function(callback) { window.setTimeout(callback, 1000/60) };
 
 var canvas = document.createElement('canvas');
 var width = 400;
@@ -112,6 +112,7 @@ var step = function() {
 
 var update = function() {
   player.update();
+  computer.update(ball);
   ball.update(player.paddle, computer.paddle);
 };
 
@@ -159,3 +160,19 @@ Paddle.prototype.move = function(x, y) {
     this.x_speed = 0;
   }
 }
+
+Computer.prototype.update = function(ball) {
+  var x_pos = ball.x;
+  var diff = - ((this.paddle.x + (this.paddle.width / 2)) - x_pos);
+  if (diff < 0 && diff < -4) {
+    diff = -5;
+  } else if (diff > 0 && diff > 4) {
+    diff = 5;
+  }
+  this.paddle.move(diff, 0);
+  if (this.paddle.x < 0) {
+    this.paddle.x = 0;
+  } else if (this.paddle.x + this.paddle.width > 400) {
+    this.paddle.x = 400 - this.paddle.width;
+  }
+};
